@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>{{ query }} - Odango</title>
+        <link rel="stylesheet" href="/css/main.css">
+    </head>
+    <body>
+        <div class="top">
+            <div class="middle">
+                <h1>Odango.moe</h1>
+                <div class="search-escape">
+                    <div class="search-cage">
+                        <form action="/collect" class="search collect">
+                            <input autocomplete="off" name="q" type="text">
+                            <button class="search-submit" type="submit"><span class="fa fa-search"></span></button>
+                            <div class="autocomplete">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="collect">
+            <div class="middle">
+                <div class="results">
+                    Loading results...
+                </div>
+            </div>
+        </div>
+        <script src="/js/main.js"></script>
+        <script class="collect-js" src="/js/collect.js" data-query="{{ query }}"></script>
+    </body>
+</html>

@@ -1,0 +1,35 @@
+<div class="searched">
+    Searched for:
+    {% for title in searched %}
+    <b>"{{ title }}"</b>
+    {% endfor %}
+</div>
+<div class="torrent-sets">
+    {% for result in results if result.meta.group %}
+        <div class="torrent-set">
+            <div class="title">
+                <span class="group tag">{{ result.meta.group }}</span>{{ result.meta.title }}
+                {% if result.meta.type %}
+                <span class="type tag">{{ result.meta.type }}</span>
+                {% endif %}
+                {% if result.meta.quality %}
+                    <span class="quality tag">{{ result.meta.quality }}</span>
+                {% endif %}
+                {% if result.meta.container %}
+                    <span class="container tag">{{ result.meta.container }}</span>
+                {% endif %}
+            </div>
+            <div class="torrents">
+                {% for torrent in result.torrents %}
+                    <div class="torrent">
+                        <span class="seeds">{{ torrent.info.seeds }}</span>
+                        <span class="leechers">{{ torrent.info.leechers }}</span>
+                        <span class="title">{{ torrent.title }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% else %}
+        No results for {{ query }}
+    {% endfor %}
+</div>
