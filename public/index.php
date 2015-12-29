@@ -1,10 +1,15 @@
 <?php
+if (php_sapi_name() == 'cli-server') {
+    if (preg_match('/\.(?:png|jpg|jpeg|gif|js|css)$/', $_SERVER["REQUEST_URI"])) {
+        return false;
+    }
+}
 
 require '../vendor/autoload.php';
 
-Odango\Registry::setStash(new Stash\Pool(new Stash\Driver\Sqlite()));
-Odango\Registry::setDatabase(new Ark\Database\Connection('mysql:dbname=odango', 'root'));
-Odango\Registry::setNyaa(new Odango\Nyaa\Database());
+Odango\OdangoPhp\Registry::setStash(new Stash\Pool(new Stash\Driver\Sqlite()));
+Odango\OdangoPhp\Registry::setDatabase(new Ark\Database\Connection('mysql:dbname=odango', 'root'));
+Odango\OdangoPhp\Registry::setNyaa(new Odango\OdangoPhp\Nyaa\Database());
 
 $loader = new Twig_Loader_Filesystem(__DIR__ . '/../storage/views/');
 $twig = new Twig_Environment($loader, array(
@@ -31,8 +36,8 @@ $app->get('/collect', function ($request, $response) use ($twig) {
 });
 
 $app->get('/part/collect', function ($request, $response) use ($twig) {
-    $nyaaCollector = new Odango\NyaaCollector();
-    $aniDbTitles = Odango\AniDbTitles::construct();
+    $nyaaCollector = new Odango\OdangoPhp\NyaaCollector();
+    $aniDbTitles = Odango\OdangoPhp\AniDbTitles::construct();
     $titles = $aniDbTitles->getAlternativeTitles($request->getParam('q'));
     if (empty($titles)) {
         $titles = [$request->getParam('q')];
@@ -55,18 +60,18 @@ $app->get('/part/collect', function ($request, $response) use ($twig) {
 
 $app->group('/json/v1/', function () {
 
-    $this->get('/', function ($request, $response) {
+    $this->get('', function ($request, $response) {
         return $response->write('{"version":"1.0"}');
     });
 
-    $this->get('/autocomplete', function ($request, $response) {
-        $aniDbTitles = Odango\AniDbTitles::construct();
+    $this->get('autocomplete', function ($request, $response) {
+        $aniDbTitles = Odango\OdangoPhp\AniDbTitles::construct();
         return $response->write(json_encode($aniDbTitles->autocomplete($request->getParam('q', ''))));
     });
 
-    $this->get('/collect', function ($request, $response) {
-        $nyaaCollector = new Odango\NyaaCollector();
-        $aniDbTitles = Odango\AniDbTitles::construct();
+    $this->get('collect', function ($request, $response) {
+        $nyaaCollector = new Odango\OdangoPhp\NyaaCollector();
+        $aniDbTitles = Odango\OdangoPhp\AniDbTitles::construct();
         $titles = $aniDbTitles->getAlternativeTitles($request->getParam('q'));
         if (empty($titles)) {
             $titles = [$request->getParam('q')];

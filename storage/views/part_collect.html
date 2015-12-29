@@ -8,18 +8,19 @@
     {% for result in results if result.meta.group %}
         <div class="torrent-set">
             <div class="title">
-                <span class="group tag">{{ result.meta.group }}</span>{{ result.meta.title }}
+                <div class="group tag">{{ result.meta.group }}</div>
+                <div>{{ result.meta.title }}</div>
                 {% if result.meta.type %}
-                <span class="type tag">{{ result.meta.type }}</span>
+                <div class="type tag">{{ result.meta.type }}</div>
                 {% endif %}
                 {% if result.meta.quality %}
-                    <span class="quality tag">{{ result.meta.quality }}</span>
+                    <div class="quality tag">{{ result.meta.quality }}</div>
                 {% endif %}
                 {% if result.meta.container %}
-                    <span class="container tag">{{ result.meta.container }}</span>
+                    <div class="container tag">{{ result.meta.container }}</div>
                 {% endif %}
             </div>
-            <div class="torrents">
+            <div class="torrents" style="display: none;">
                 {% for torrent in result.torrents %}
                     <div class="torrent">
                         <span class="seeds">{{ torrent.info.seeds }}</span>
