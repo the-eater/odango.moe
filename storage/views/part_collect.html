@@ -1,3 +1,4 @@
+<h2>{{ query }}</h2>
 <div class="searched">
     Searched for:
     {% for title in searched %}
@@ -5,31 +6,24 @@
     {% endfor %}
 </div>
 <div class="torrent-sets">
-    {% for result in results if result.meta.group %}
-        <div class="torrent-set">
-            <div class="title">
-                <div class="group tag">{{ result.meta.group }}</div>
-                <div>{{ result.meta.title }}</div>
-                {% if result.meta.type %}
-                <div class="type tag">{{ result.meta.type }}</div>
-                {% endif %}
-                {% if result.meta.quality %}
-                    <div class="quality tag">{{ result.meta.quality }}</div>
-                {% endif %}
-                {% if result.meta.container %}
-                    <div class="container tag">{{ result.meta.container }}</div>
-                {% endif %}
-            </div>
-            <div class="torrents" style="display: none;">
-                {% for torrent in result.torrents %}
-                    <div class="torrent">
-                        <span class="seeds">{{ torrent.info.seeds }}</span>
-                        <span class="leechers">{{ torrent.info.leechers }}</span>
-                        <span class="title">{{ torrent.title }}</span>
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
+    {% for hash, result in results if result.meta.group %}
+    <a class="torrent-set" href='/series/{{ result.meta.title }}/{{ hash|replace({(result.meta.title ~ '-' ) : ""}) }}'>
+            <h3 class="group">{{ result.meta.group }}</h3>
+            <table>
+                <tr>
+                    <th>Quality
+                    <td>{{ result.meta.quality ?: '-' }}
+                <tr>
+                    <th>Type
+                    <td>{{ result.meta.type ?: '-' }}
+                <tr>
+                    <th>Amount
+                    <td>{{ result.torrents|length }}
+                <tr>
+                    <th>Size
+                    <td>{{ (result.info.size.total / (1024 * 1024))|round(0, 'ceil') }} MB
+            </table>
+        </a>
     {% else %}
         No results for {{ query }}
     {% endfor %}

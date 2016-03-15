@@ -1,5 +1,5 @@
-@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300);
-@import url(https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css);
+@import url(//fonts.googleapis.com/css?family=Open+Sans:400,300);
+@import url(//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css);
 
 body, html {
     height: 100%;
@@ -8,7 +8,7 @@ body, html {
     font-family: Open Sans
 }
 
-.main, .collect {
+.main, .collect, .series {
     background: linear-gradient(to bottom, #fdf7f7, #fcf3f3);
     box-sizing: border-box;
     width: 100%;
@@ -18,7 +18,7 @@ body, html {
     position: relative;
 }
 
-.collect {
+.collect, .series {
     min-height: calc(100% - 75px)
 }
 
@@ -124,8 +124,20 @@ body, html {
     float: left;
 }
 
+.torrent-sets {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
 .torrent-set {
-    margin-top: 20px;
+    text-decoration: none;
+    color: black;
+    width: 190px;
+    background: white;
+    margin: 5px;
+    padding: 5px;
+    box-sizing: border-box;
 }
 
 .torrent-set > .title {
@@ -137,4 +149,27 @@ body, html {
     background: #f4d2d2;
     padding: 10px;
     margin-right: 5px;
+}
+
+.group {
+    margin: 0px;
+}
+
+.left {
+    float: left;
+    margin: 0;
+    width: 50%;
+}
+
+.download {
+    margin-left: 10px;
+    color: #E18484;
+}
+
+.torrent > h3 {
+    margin-bottom: 5px;
+}
+
+.clear {
+    clear: both;
 }

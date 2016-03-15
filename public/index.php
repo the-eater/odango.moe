@@ -7,15 +7,18 @@ if (php_sapi_name() == 'cli-server') {
 
 require '../vendor/autoload.php';
 
+ini_set('memory_limit','1G');
+
 Odango\OdangoPhp\Registry::setStash(new Stash\Pool(new Stash\Driver\Sqlite()));
-Odango\OdangoPhp\Registry::setDatabase(new Ark\Database\Connection('mysql:dbname=odango', 'root'));
-Odango\OdangoPhp\Registry::setNyaa(new Odango\OdangoPhp\Nyaa\Database());
+Odango\OdangoPhp\Registry::setDatabase(new Ark\Database\Connection('pgsql:host=localhost;port=5432;dbname=odango', 'eater', 'test'));
+Odango\OdangoPhp\Registry::setNyaa(new Odango\OdangoPhp\Nyaa\DatabaseWithMeta());
 
 $loader = new Twig_Loader_Filesystem(__DIR__ . '/../storage/views/');
 $twig = new Twig_Environment($loader, array(
     'debug' => true,
     'cache' => '/tmp/twig/',
 ));
+$twig->addExtension(new Twig_Extension_Debug());
 
 $configuration = [
     'settings' => [
@@ -52,10 +55,21 @@ $app->get('/part/collect', function ($request, $response) use ($twig) {
 
     return $response->write(
         $twig->render('part_collect.html', [
+            'query'   => $request->getParam('q'),
             'searched' => $titles,
             'results'  => $array
         ])
     );
+});
+
+$app->get('/series/{query}/{hash}', function ($request, $response, $args) use ($twig) {
+    $nyaaCollector = new Odango\OdangoPhp\NyaaCollector();
+    $results = $nyaaCollector->collect($args['query'], [ 'category' => '1_37' ]);
+    $series = $results[$args['query'] . '-' . $args['hash']];
+
+    return $response->write($twig->render('series.html', [
+        'series' => $series->toArray()
+    ]));
 });
 
 $app->group('/json/v1/', function () {
@@ -92,6 +106,14 @@ $app->group('/json/v1/', function () {
             ]
         ));
     });
+
+    $this->get('meta', function ($request, $response, $args) {
+        $title = $request->getParam('title');
+        $meta = Odango\OdangoPhp\NyaaMeta::createFromTitle($title);
+
+        return $response->write(json_encode($meta->toArray()));
+    });
+
 })->add(function ($request, $response, $next) {
     $next($request, $response);
     $response = $response->withHeader('Content-Type', 'application/json');

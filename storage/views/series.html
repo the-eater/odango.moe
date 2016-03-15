@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>{{ query }} - Odango</title>
+        <link rel="stylesheet" href="/css/main.css">
+    </head>
+    <body>
+        <div class="top">
+            <div class="middle">
+                <h1>Odango.moe</h1>
+                <div class="search-escape">
+                    <div class="search-cage">
+                        <form action="/collect" class="search collect">
+                            <input autocomplete="off" name="q" type="text">
+                            <button class="search-submit" type="submit"><span class="fa fa-search"></span></button>
+                            <div class="autocomplete">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="series">
+            <div class="middle">
+                <h2>{{ series.meta.group }} - {{ series.meta.title }}</h2>
+                <div>
+                    <table class="left">
+                        {% for key,value in series.meta if key not in ["group", "title", "unparsed", "ep"] %}
+                        <tr>
+                            <th>{{ key|capitalize }}</th>
+                            <td>{{ value }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                    <table class="left">
+                        <tr>
+                            <th>Seeds</th>
+                            <td>Min: {{ series.info.seeds.min }} Avg: {{ series.info.seeds.avg }}
+                        </tr>
+                        <tr>
+                            <th>Leechers</th>
+                            <td>Min: {{ series.info.leechers.min }} Avg: {{ series.info.leechers.avg }}
+                        </tr>
+                        <tr>
+                            <th>Size</th>
+                            <td>Avg: {{ (series.info.size.avg / (1024 * 1024))|round(0, 'ceil') }}MB Total: {{ (series.info.size.total / (1024 * 1024 ))|round(0, 'ceil') }}MB
+                        </tr>
+                    </table>
+                </div>
+                <div class="clear"></div>
+                <h2>Torrents</h2>
+                <div class="torrents">
+                    {% for torrent in series.torrents %}
+                        <div class="torrent">
+                            <h3>
+                                {{ torrent.title }}
+                                <a
+                                    class="download"
+                                    href="https://www.nyaa.se/?page=download&tid={{ torrent.torrentId }}"
+                                    >
+                                    <i class="fa fa-download"></i>
+                                </a>
+                            </h3>
+                            Seeds: {{ torrent.info.seeds }} Leechers: {{ torrent.info.leechers }} Downloads: {{ torrent.info.downloads }} Size: {{ (torrent.info.size / (1024 * 1024))|round(0, 'ceil') }}MB
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <script src="/js/main.js"></script>
+    </body>
+</html>
